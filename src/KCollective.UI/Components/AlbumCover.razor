@@ -1,0 +1,12 @@
+@* Flat front cover with a slim spine on the left. *@
+<div class="kc-album" style="--spine: @Edition.SpineColor">
+    <div class="kc-album-spine" aria-hidden="true">
+        <span>@Title</span>
+    </div>
+    <img class="kc-album-front" src="@Edition.CoverImage" alt="@($"{Title} – {Edition.Name} cover (sample)")" />
+</div>
+
+@code {
+    [Parameter, EditorRequired] public AlbumEdition Edition { get; set; } = default!;
+    [Parameter, EditorRequired] public string Title { get; set; } = "";
+}

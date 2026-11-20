@@ -1,0 +1,7 @@
+<span class="kc-chip @(Variant.Source == CardSource.AlbumPull ? "is-pull" : "is-benefit")">
+    @(Variant.Source == CardSource.AlbumPull ? "Album pull" : "Pre-order benefit")
+</span>
+
+@code {
+    [Parameter, EditorRequired] public PhotocardVariant Variant { get; set; } = default!;
+}

@@ -1,0 +1,82 @@
+@page "/cards/{VariantId}"
+@inject ICatalog Catalog
+@inject CollectionService Collection
+
+@if (_variant is null)
+{
+    <NotFound />
+}
+else
+{
+    var member = Catalog.GetMember(_variant.MemberId)!;
+    var edition = Catalog.GetEdition(_variant.EditionId)!;
+    var album = Catalog.GetAlbum(edition.AlbumId)!;
+
+    <PageTitle>@_variant.Name · @member.StageName</PageTitle>
+
+    <div class="kc-card-detail">
+        <div class="kc-card-detail-image">
+            <CardImage Variant="_variant" Quantity="_quantity" Class="kc-card-large" />
+        </div>
+
+        <div class="kc-card-detail-info">
+            <p class="kc-eyebrow">@member.StageName · @album.Title</p>
+            <h1 class="kc-h1">@_variant.Name</h1>
+            <p><SourceChip Variant="_variant" /> @if (_variant.SourceDetail is not null) { <span class="kc-muted">@_variant.SourceDetail</span> }</p>
+            @if (_variant.IsSample)
+            {
+                <p class="kc-note">Sample photocard for the demo catalog: not a real release.</p>
+            }
+
+            @if (_loaded)
+            {
+                <div class="kc-owned">
+                    <span class="kc-muted">In your collection</span>
+                    <div class="kc-stepper">
+                        <button type="button" class="kc-btn kc-btn-ghost" aria-label="Remove one copy"
+                                disabled="@(_quantity == 0 || _busy)" @onclick="RemoveAsync">−</button>
+                        <output data-testid="quantity" aria-live="polite">@_quantity</output>
+                        <button type="button" class="kc-btn" aria-label="Add one copy"
+                                disabled="@_busy" @onclick="AddAsync">+</button>
+                    </div>
+                    <span class="kc-muted">@(_quantity == 1 ? "copy" : "copies")</span>
+                </div>
+            }
+
+            <nav class="kc-related">
+                <a href="@($"albums/{edition.Id}")">@album.Title · @edition.Name</a>
+                <a href="@($"members/{member.Id}")">All @member.StageName cards</a>
+            </nav>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public string VariantId { get; set; } = "";
+
+    private PhotocardVariant? _variant;
+    private int _quantity;
+    private bool _loaded, _busy;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _variant = Catalog.GetVariant(VariantId);
+        await Collection.EnsureLoadedAsync();
+        _quantity = Collection.QuantityOf(VariantId);
+        _loaded = true;
+    }
+
+    private Task AddAsync() => Change(() => Collection.AddCopiesAsync(VariantId));
+    private Task RemoveAsync() => Change(() => Collection.RemoveCopyAsync(VariantId));
+
+    private async Task Change(Func<Task> action)
+    {
+        _busy = true;
+        try { await action(); }
+        finally
+        {
+            _quantity = Collection.QuantityOf(VariantId);
+            _busy = false;
+        }
+    }
+}

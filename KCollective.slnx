@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/KCollective.Core/KCollective.Core.csproj" />
+    <Project Path="src/KCollective.UI/KCollective.UI.csproj" />
+    <Project Path="src/KCollective.Web/KCollective.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/KCollective.Core.Tests/KCollective.Core.Tests.csproj" />
+  </Folder>
+</Solution>

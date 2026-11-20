@@ -1,0 +1,27 @@
+@page "/"
+@inject ICatalog Catalog
+
+<PageTitle>K Collective</PageTitle>
+
+<h1 class="kc-h1">Your collection</h1>
+<p class="kc-muted">A local demo: everything below is fictional sample data and stays on this device.</p>
+
+<div class="kc-home-grid">
+    @foreach (var edition in Catalog.Editions)
+    {
+        var album = Catalog.GetAlbum(edition.AlbumId)!;
+        <a class="kc-tile" href="@($"albums/{edition.Id}")">
+            <AlbumCover Edition="edition" Title="@album.Title" />
+            <span class="kc-tile-title">@album.Title</span>
+            <span class="kc-muted">@edition.Name</span>
+        </a>
+    }
+    @foreach (var member in Catalog.Members)
+    {
+        <a class="kc-tile" href="@($"members/{member.Id}")">
+            <span class="kc-avatar kc-avatar-lg" style="--accent: @member.AccentColor">@member.StageName[0]</span>
+            <span class="kc-tile-title">@member.StageName</span>
+            <span class="kc-muted">@Catalog.GetGroup(member.GroupId)?.Name</span>
+        </a>
+    }
+</div>

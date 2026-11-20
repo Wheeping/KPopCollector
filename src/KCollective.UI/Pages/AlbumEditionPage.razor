@@ -1,0 +1,56 @@
+@page "/albums/{EditionId}"
+@inject ICatalog Catalog
+@inject CollectionService Collection
+
+@if (_edition is null || _album is null)
+{
+    <NotFound />
+}
+else
+{
+    <PageTitle>@_album.Title · @_edition.Name</PageTitle>
+
+    <section class="kc-album-hero">
+        <AlbumCover Edition="_edition" Title="@_album.Title" />
+        <div class="kc-album-meta">
+            <p class="kc-eyebrow">@Catalog.GetGroup(_album.GroupId)?.Name</p>
+            <h1 class="kc-h1">@_album.Title</h1>
+            <p class="kc-edition">@_edition.Name</p>
+            <p class="kc-muted">Released @_album.ReleaseDate.ToString("MMM d, yyyy")</p>
+        </div>
+    </section>
+
+    <section class="kc-section">
+        <h2 class="kc-h2">Inclusions</h2>
+        <InclusionList Items="_edition.Inclusions" />
+    </section>
+
+    <section class="kc-section">
+        <div class="kc-section-head">
+            <h2 class="kc-h2">Possible pulls</h2>
+            <span class="kc-muted">@_pulls.Count cards · swipe</span>
+        </div>
+        @if (_loaded)
+        {
+            <PullRow Variants="_pulls" />
+        }
+    </section>
+}
+
+@code {
+    [Parameter] public string EditionId { get; set; } = "";
+
+    private AlbumEdition? _edition;
+    private Album? _album;
+    private IReadOnlyList<PhotocardVariant> _pulls = [];
+    private bool _loaded;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _edition = Catalog.GetEdition(EditionId);
+        _album = _edition is null ? null : Catalog.GetAlbum(_edition.AlbumId);
+        _pulls = _edition is null ? [] : Catalog.PossiblePulls(_edition.Id);
+        await Collection.EnsureLoadedAsync();
+        _loaded = true;
+    }
+}

@@ -1,0 +1,22 @@
+@* Full, uncropped card: the frame takes the card's real aspect ratio and the image is contained, never cropped. *@
+<div class="kc-card @(Quantity > 0 ? "is-owned" : "is-missing") @Class"
+     style="aspect-ratio: @Variant.WidthMm / @Variant.HeightMm">
+    <img src="@Variant.Image" alt="@AltText" loading="lazy" draggable="false" />
+    @if (Variant.IsSample && ShowSampleTag)
+    {
+        <span class="kc-sample-tag">Sample</span>
+    }
+    @if (Quantity > 1)
+    {
+        <span class="kc-qty" aria-label="@($"{Quantity} copies owned")">×@Quantity</span>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public PhotocardVariant Variant { get; set; } = default!;
+    [Parameter] public int Quantity { get; set; }
+    [Parameter] public bool ShowSampleTag { get; set; } = true;
+    [Parameter] public string? Class { get; set; }
+
+    private string AltText => $"{Variant.Name}{(Variant.IsSample ? " (sample image)" : "")}";
+}

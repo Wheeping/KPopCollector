@@ -1,0 +1,16 @@
+@* Basic swipeable row: native horizontal scroll with snap points (touch swipe, trackpad, or shift+wheel).
+   Kept self-contained so the cylindrical carousel can replace it later without touching the page. *@
+<div class="kc-pullrow" role="list" aria-label="Possible pulls">
+    @foreach (var v in Variants)
+    {
+        <a class="kc-pullrow-item" role="listitem" href="@($"cards/{v.Id}")">
+            <CardImage Variant="v" Quantity="Collection.QuantityOf(v.Id)" />
+            <span class="kc-caption">@v.Name</span>
+        </a>
+    }
+</div>
+
+@code {
+    [Inject] private CollectionService Collection { get; set; } = default!;
+    [Parameter, EditorRequired] public IReadOnlyList<PhotocardVariant> Variants { get; set; } = [];
+}

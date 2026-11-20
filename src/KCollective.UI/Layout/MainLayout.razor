@@ -1,0 +1,15 @@
+@inherits LayoutComponentBase
+
+<div class="kc-shell">
+    <header class="kc-topbar">
+        <a class="kc-brand" href="">K Collective</a>
+        <nav class="kc-nav">
+            <NavLink href="@($"albums/{SeedCatalog.EditionId}")">Album</NavLink>
+            <NavLink href="@($"members/{SeedCatalog.MemberId}")">Member</NavLink>
+        </nav>
+        <span class="kc-pill" title="Stored only on this device">Demo collection</span>
+    </header>
+    <main class="kc-main">
+        @Body
+    </main>
+</div>

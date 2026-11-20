@@ -1,0 +1,65 @@
+@page "/members/{MemberId}"
+@inject ICatalog Catalog
+@inject CollectionService Collection
+
+@if (_member is null)
+{
+    <NotFound />
+}
+else
+{
+    <PageTitle>@_member.StageName</PageTitle>
+
+    <section class="kc-member-header" style="--accent: @_member.AccentColor">
+        <span class="kc-avatar kc-avatar-lg">@_member.StageName[0]</span>
+        <div class="kc-member-meta">
+            <p class="kc-eyebrow">@Catalog.GetGroup(_member.GroupId)?.Name</p>
+            <h1 class="kc-h1">@_member.StageName</h1>
+            @if (_loaded)
+            {
+                <p class="kc-completion" data-testid="member-completion">
+                    <strong>@_completion.Owned</strong> / @_completion.Total variants
+                </p>
+                <div class="kc-progress" role="progressbar" aria-valuemin="0" aria-valuemax="@_completion.Total" aria-valuenow="@_completion.Owned">
+                    <span style="width: @((_completion.Fraction * 100).ToString("0.#", System.Globalization.CultureInfo.InvariantCulture))%"></span>
+                </div>
+            }
+        </div>
+    </section>
+
+    @if (_loaded)
+    {
+        <section class="kc-section">
+            <ul class="kc-card-grid">
+                @foreach (var v in _variants)
+                {
+                    <li>
+                        <a href="@($"cards/{v.Id}")">
+                            <CardImage Variant="v" Quantity="Collection.QuantityOf(v.Id)" />
+                            <span class="kc-caption">@v.Name</span>
+                            <SourceChip Variant="v" />
+                        </a>
+                    </li>
+                }
+            </ul>
+        </section>
+    }
+}
+
+@code {
+    [Parameter] public string MemberId { get; set; } = "";
+
+    private Member? _member;
+    private IReadOnlyList<PhotocardVariant> _variants = [];
+    private Completion _completion = new(0, 0);
+    private bool _loaded;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        _member = Catalog.GetMember(MemberId);
+        _variants = _member is null ? [] : Catalog.VariantsForMember(_member.Id);
+        await Collection.EnsureLoadedAsync();
+        _completion = Collection.MemberCompletion(MemberId);
+        _loaded = true;
+    }
+}

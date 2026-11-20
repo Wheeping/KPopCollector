@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+<defs><linearGradient id="s" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#2b1f5c"/><stop offset=".55" stop-color="#c2457a"/><stop offset="1" stop-color="#ffb36b"/></linearGradient></defs>
+<rect width="600" height="600" fill="url(#s)"/>
+<circle cx="300" cy="360" r="120" fill="#ffe7b0" fill-opacity=".85"/>
+<rect y="380" width="600" height="220" fill="#2b1f5c" fill-opacity=".85"/>
+<g font-family="Helvetica, Arial, sans-serif" fill="#fff" text-anchor="middle">
+<text x="300" y="110" font-size="24" letter-spacing="10" opacity=".9">LUMEN</text>
+<text x="300" y="490" font-size="68" font-weight="800" letter-spacing="6">AFTERGLOW</text>
+<text x="300" y="535" font-size="22" letter-spacing="4" opacity=".85">PHOTOBOOK VER. A</text>
+</g>
+<rect x="210" y="560" width="180" height="26" rx="13" fill="#000" fill-opacity=".6"/>
+<text x="300" y="579" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="3">SAMPLE COVER</text>
+</svg>
